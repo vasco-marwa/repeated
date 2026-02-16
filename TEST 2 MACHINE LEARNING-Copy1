@@ -1,0 +1,230 @@
+# importing libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import joblib
+import os
+
+os.chdir('C://Users//Administrator//Documents//archive') # changes the current working directory to C:\UDocuments\archive
+
+#loading the data
+data = pd.read_csv("Project 1 - Weather Dataset.csv")
+
+data
+
+data.isnull().sum() 
+
+#dependent and independent data
+X = data.iloc[:, [1,2,3,4,5,6,7]].values
+y = data.iloc[:, -1].values
+
+X
+
+#splitting the data into training and test sets
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+# random_state = 0 "obtain consistent results across multiple runs"
+
+X_train
+
+arr=np.array([1,2,3,4,5,6])
+
+arr
+
+X_test
+
+reshaped=arr.reshape(2,3)
+
+y_train
+
+y_test
+
+reshaped1=arr.reshape(-1,1)
+
+y_test
+
+from sklearn.preprocessing import LabelEncoder
+
+# Copy dataset
+data_encoded = data.copy()
+
+# Create encoder
+le = LabelEncoder()
+
+# Encode only last column
+data_encoded.iloc[:, -1] = le.fit_transform(data_encoded.iloc[:, -1])
+
+
+
+
+
+data_encoded
+
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+
+data.iloc[:, -1] = le.fit_transform(data.iloc[:, -1])
+
+print(data.head())
+print(data.shape)
+
+
+X_train
+
+y_train
+
+data = data.drop('Date/Time', axis=1)
+
+
+data
+
+#LINEAR REGRESSION  MODEL
+
+
+le = LabelEncoder()
+data.iloc[:, -1] = le.fit_transform(data.iloc[:, -1])  # last column
+
+
+X = data.iloc[:, :-1]  # all columns except last
+y = data.iloc[:, -1]   # last column (encoded)
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=0
+)
+
+
+regressorR = LinearRegression()
+regressorR.fit(X_train, y_train)
+
+print("Linear Regression model trained successfully!")
+print("X_train shape:", X_train.shape)
+print("y_train shape:", y_train.shape)
+
+
+#MODEL VISUALIZATION
+
+
+
+#  Scatter plot of predicted vs actual
+# =========================
+plt.figure(figsize=(8,6))
+plt.scatter(y_test, y_predR, color='blue', alpha=0.6)
+plt.plot([y_test.min(), y_test.max()],
+         [y_test.min(), y_test.max()],
+         color='red', linewidth=2)  # perfect prediction line
+plt.xlabel("Actual Values")
+plt.ylabel("Predicted Values")
+plt.title("Linear Regression: Predicted vs Actual")
+plt.grid(True)
+plt.show()
+
+
+# LINEARREGRESSION MODEL EVALUATION
+
+mseR = mean_squared_error(y_test, y_predR)
+rmseR = np.sqrt(mseR)
+r2R = r2_score(y_test, y_predR)
+
+
+print("Linear Regression Evaluation:")
+print("Mean Squared Error (MSE):", mseR)
+print("Root Mean Squared Error (RMSE):", rmseR)
+print("R² Score:", r2R)
+
+
+coefficients = regressorR.coef_
+intercept = regressorR.intercept_
+
+print(coefficients)
+print(intercept)
+
+#predicting the test set resultsa
+y_predR = regressorR.predict(X_test) #regression model
+
+print(y_predR)
+
+# SAVING AND LOADING THE MODEL
+
+import joblib
+
+# Save the trained Decision Tree Regressor
+joblib.dump(regressorR, "Linear_RegressionTEST2_model.pkl")
+
+print("Model saved successfully as Linear_RegressionTEST2_model.pkl")
+
+
+# Load the saved model
+loaded_model = joblib.load("Linear_RegressionTEST2_model.pkl")
+
+# Use it to make predictions
+y_pred_loaded = loaded_model.predict(X_test)
+print(y_pred_loaded[:10])  # show first 10 predictions
+
+
+#DECISION TREE MODEL
+
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+regressorDT = DecisionTreeRegressor(random_state=0)
+
+regressorDT.fit(X_train, y_train)  # make sure X_train is numeric
+
+y_predDT = regressorDT.predict(X_test)
+
+mseDT = mean_squared_error(y_test, y_predDT)
+r2DT = r2_score(y_test, y_predDT)
+
+print("Decision Tree Regressor Evaluation:")
+print("Mean Squared Error (MSE):", mseDT)
+print("R² Score:", r2DT)
+
+
+plt.figure(figsize=(20,10))
+plot_tree(
+    regressorDT,
+    feature_names=X_train.columns,
+    filled=True,
+    rounded=True,
+    fontsize=12
+)
+plt.title("Decision Tree Regressor Visualization")
+plt.show()
+
+import joblib
+
+# Save the trained Decision Tree Regressor
+joblib.dump(regressorDT, "decision_treeTEST2_model.pkl")
+
+print("Model saved successfully as decision_treeTEST2_model.pkl")
+
+
+#LOADING THE SAVED MODEL
+
+# Load the saved model
+loaded_model = joblib.load("decision_tree_model.pkl")
+
+# Use it to make predictions
+y_pred_loaded = loaded_model.predict(X_test)
+print(y_pred_loaded[:10])  # show first 10 predictions
+
+
+#Accepts user input for the number of years of experience
+years_of_experience = float(input("Enter years of experience: "))
+
+
+#Prepares the input data for prediction (new_data)
+new_data = [[years_of_experience]]
+
+#Print the predicted salary
+predicted_salary = loaded_salarymod.predict(new_data)
+
+# Print the predicted salary
+print(f"The predicted salary for {years_of_experience} years of experience is:{predicted_salary[0]}")
+
+
+
+
+
